@@ -966,6 +966,10 @@ History Log
 =============
 
 
+- 1.2.2 -- 2019-11-25
+
+    - reorganized assets
+    
 - 1.2.1 -- 2019-11-25
 
     - migrating to JFileUploader repository for better planet compatibility
