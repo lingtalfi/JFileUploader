@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25
+2019-11-25 -> 2020-01-24
 
 
 
@@ -24,939 +24,405 @@ Or just download it and place it where you want otherwise.
 
 
 
-![js file uploader screenshot with bootstrap](https://lingtalfi.com/img/js/jsfileuploader/js-file-uploader.png)
+![js file uploader screenshot, default theme](https://lingtalfi.com/img/universe/JFileUploader/fileuploader.png)
+
+
 
 Table of Contents
 =================
 
-* [Js file uploader](#js-file-uploader)
-  * [Summary](#summary)
-  * [Features](#features)
-  * [The global picture](#the-global-picture)
-  * [Browser compatibility](#browser-compatibility)
-  * [Sources](#sources)
-  * [The plugin in a nutshell](#the-plugin-in-a-nutshell)
-  * [How does it work?](#how-does-it-work)
-     * [Step 1: onReceive](#step-1-onreceive)
-        * [The dict object](#the-dict-object)
-     * [Step 2: onProgress](#step-2-onprogress)
-     * [Step 3: onComplete](#step-3-oncomplete)
-* [Some built-in modules](#some-built-in-modules)
-  * [Error handling](#error-handling)
-  * [Dropzone](#dropzone)
-  * [AjaxForm](#ajaxform)
-  * [Progress handler](#progress-handler)
-  * [Url to Form](#url-to-form)
-  * [File visualizer](#file-visualizer)
-* [Examples](#examples)
-  * [Simplest example](#simplest-example)
-  * [Displaying errors](#displaying-errors)
-  * [Validation](#validation)
-  * [Drop zone](#drop-zone)
-  * [Progress handler](#progress-handler-1)
-  * [urlToForm module, creating some inputs](#urltoform-module-creating-some-inputs)
-  * [File visualizer module](#file-visualizer-module)
-  * [Callbacks](#callbacks)
-* [History log](#history-log)
-
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+* [JFileUploader](#jfileuploader)
+* [Install](#install)
+* [Table of Contents](#table-of-contents)
+  * [In a nutshell](#in-a-nutshell)
+  * [What is it?](#what-is-it)
+  * [Quickstart](#quickstart)
+* [Documentation](#documentation)
+  * [The synopsis](#the-synopsis)
+  * [The widget html structure](#the-widget-html-structure)
+  * [General overview of the objects](#general-overview-of-the-objects)
+  * [The FileUploader object](#the-fileuploader-object)
+  * [The FileList object](#the-filelist-object)
+  * [The theme object](#the-theme-object)
+  * [Lang](#lang)
+* [History Log](#history-log)
 
 
 
 
 
-
-
-
-Features
+In a nutshell
 ---------
 
-- it's a jquery plugin
-- various modules which are disabled by default:
-	- error container
-	- dropzone support
-	- progress handler
-	- url to form module, which creates/removes the necessary hidden input(s) as the files are uploaded/removed
-	- file visualizer module, to visualize your files as they are uploaded/removed
-- built-in validation options:
-	- maxFile: to restrict the maximum number of files allowed
-	- maxFileSize: define the maximum size of a file
-	- mimeType: define which mime type are allowed
-- all built-in error messages can be modified (if you need to translate this module to your language)
+- allows you to handle one or multiple file uploads, using ajax and a server side script
+- inspired by plupload
+- translated in english and french, other languages can be added easily
+- items can be sorted (this feature requires jqueryui sortable, graceful degradataion implemented)
+- it requires jquery
+- it will work on all major browsers except IE9-, Opera Mini, and it might not work on "Safari on iOS", there is no graceful degradation implemented.
+- it has a default theme, other themes can be added easily
 
 
 
 
-The global picture
+What is it?
 -------------
 
-The (js) file uploader acts as a client, which submits the files to a backend service, like a php script for instance.
+It's a javascript widget that provides file uploads.
+It works in conjunction with a server side script, to store the uploaded file on the hard drive.
 
+There is also an older version of this plugin (see [README-v1.md](https://github.com/lingtalfi/JFileUploader/blob/master/README-v1.md)
+and [fileuploader-v1.js](https://github.com/lingtalfi/JFileUploader/blob/master/assets/map/www/libs/universe/Ling/JFileUploader/fileuploader-v1.js) if you're interested
+in that), but it was quite messy in terms of code organization so I've rewritten it.
 
+I've been inspired by the [plupload](https://www.plupload.com/) plugin, and in fact, I almost decided to use plupload, but then
+I realized that I also want to implement features such as a crop box, which plupload doesn't have, so I preferred to re-code everything,
+so that I have complete control over the development (I'm generally not good at extending somebody else's code).
 
+On the downside, I've not taken care of browsers compatibility problems, and so if you want a cross-browsers compatible solution,
+you're probably better off using plupload, because jFileUploader will work only in all major browsers, but will fail in IE9 and below,
+and in Opera mini, and possibly in Safari on iOS (and there is no graceful degradation for that yet).
 
 
+On the positive side, now the code is more organized than before, and so it's easier to extend, I'll be working on this crop plugin
+very soon...
 
-Browser compatibility
---------
-The fileUploader plugin uses the html5 file api, which in IE is available only since IE 10.
-https://caniuse.com/#feat=fileapi
-So, if you need to support IE9 for instance, please use another plugin...
+This plugin requires 3 js files:
 
+- the core, which contains the main objects
+- the theme file, which draws the widget and can be changed (I plan to do a bootstrap theme soon)
+- the lang file, which is responsible for encoding the language translations for a given lang
 
 
-Sources
------------
-https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
-http://significanttechno.com/file-upload-progress-bar-using-javascript
+There is only one core file.
+For the theme, the idea is that you include the theme you want by including its file. All themes are in the **theme** folder.
+For the lang, the idea is that you include only the lang file that you want. All lang files are located in the **lang** folder.
 
+It's important that the lang file and the theme file are included **AFTER** the core file (because they register themselves to the core,
+so the core needs to be there when they are loaded).
 
 
 
-The plugin in a nutshell
-------------
 
-Upload the files where you want via this plugin.
-
-This plugin basically provides you with:
-
-- a callback when the files are received (so that you can decide whether or not to trigger
-     the upload based on some validation rules, like if the file weight is too big...)
-- a callback to handle the progress of the upload (so that you can display a progress bar)
-- a callback to handle a successful/not successful upload (so that you can display a thumbnail of the uploaded image
-     for instance, or an error message if the backend server responded with an error)
-
-- you can define an element as a dropzone
-
-- default message errors are generated for the most common validations (wrong mime type, file size problem)
-- a default error container to display error messages when they occur
-- a callback for handling error messages if you don't want to use the default error container
-- there are some other modules that you can activate/de-activate for free before implementing your own logic.
-
-
-
-How does it work?
----------
-
-### Step 1: onReceive
-
-When the user clicks on the input file (or drops a file into the dropzone), the onReceive callback is called
-for each file.
-Note: don't forget to add the multiple html attribute to your input if you want to allow multiple files upload.
-
-
-By default it will return true, which means that the file is valid.
-
-If the file is valid, then it's uploaded to the backend server (step 2).
-
-To prevent the file from being uploaded, make the onReceive callback return false.
-
-Since the validation errors are pretty much the same for every upload (file too big, wrong mime type),
-I provide some built-in error messages.
-
-
-However, the language in which you want to display them might vary, so I provide them in english only,
-and then you use the dict object to provide the translation if necessary.
-
-#### The dict object
-The dict object basically contains all the strings that are meant to be displayed to the user.
-The dict object contains strings related to:
-- the validation error messages
-
-
-
-If you want to provide your own error messages, based on your own rules,
-simply use the this.appendError method from the onReceive callback.
-
-
-
-So what are the built-in options we can use?
-
-- **maxFile**: int = -1, the maximum number of files that we want.
-         If -1, it means we can upload as many as we want.
-
-
-- **maxFileSize**: int = -1, the maximum number of bytes per file. Use -1 (negative one) to allow any size.
-             An error message will be generated if the size of the selected file is more than the maxFileSize value.
-             The error message displayed to the user is customized using the "dict.maxFileSizeExceeded" key.
-             The following tags can be used in the error message:
-             - {fileName}: the name of the file
-             - {fileSize}: the current file size value formatted (with the most relevant unit)
-             - {maxSize}: the max file size value formatted (with the most relevant unit)
-
-
-- **mimeType**: array|null, the list (javascript array []) of allowed mime types.
-             By default, mimeType equals null, which means all mime types are allowed.
-             An error message is generated when a file's mime type is not in the allowed mime type list.
-             The error message is dict.wrongMimeType, and uses the following tags:
-             - {allowedMimeTypes}: the comma separated list of allowed mime types
-             - {fileName}: the name of the file
-             - {fileMimeType}: the mime type of the current file
-
-
-
-
-
-
-
-
-### Step 2: onProgress
-
-Assuming that step 1 went ok, and the onReceive callback returned true, then the files are uploaded.
-You can use the onProgress callback (which is triggered for each file individually) to get access to the progress
-data of the file while it's being uploaded.
-
-
-### Step 3: onComplete
-
-When the file is uploaded (i.e. when it is sent successfully to the backend server), this plugin expects a
-response from the back end server. The response is a json array, which structure depends on the type of response:
-
-- in case of success, the json array structure should be:
-     - **type**: success
-     - **url**: (the url to the uploaded file treated by the server)
-
-- in case of error, the json array structure should be:
-     - **type**: error
-     - **message**: (the error message here...)
-
-
-
-The onSuccess callback is fired for every file that is successfully uploaded (i.e. meaning the server has
-returned a successful response for that file).
-
-
-
-Some built-in modules
-=================
-
-All the modules below are not active by default.
-If you want to use them, you need to activate them manually using the corresponding option (which starts with the "use" prefix).
-
-
-Error handling
-----------------
-At any moment, when an error occurs (i.e. when the addError method has been called) the onError callback is fired,
-so that you can create any error handling system that you like.
-By default though, I provide the following error system, which you can enable using the **useErrorContainer** option:
-every time an error occurs, it is appended to an error container.
-Every time new files are selected, the error container is flushed out so that it can show only the
-relevant error messages.
-
-The error container can be any element that you like.
-It is hidden by default, but becomes visible when/if an error occurs.
-The error container contains the error list container, which is where the errors are appended.
-
-In other words, the error container is like the wrapper, it can have a title, like for instance:
-Oops, the following error occurred.
-And the error list container is for instance the ul element inside this wrapper, and to which the error messages
-are appended.
-The error message is created using a template that you define.
-
-Use the following options to configure the error container system according to your needs:
-
-- **useErrorContainer**: bool, whether to activate this module
-- **errorContainer**: the jquery object representing the error container (the wrapper containing the title and the list container)
-- **errorListContainer**: string = ul, the jquery selector to use to target the error list container element (the error message container),
-         the jquery context being the errorContainer object.
-- **errorMessageTemplate**: string|callable. The template used to create each error message. Each error message being
-         then appended to the error list container.
-         If errorMessageTemplate is a string, we can use the {message} tag, which will be replaced with the actual message.
-         If errorMessageTemplate is a callable, it takes the error message as an argument, and should return the
-         error message html code (that we inject directly to the error list container).
-
-
-
-
-Dropzone
---------
-If you wish to, you can create any element and turn it into a drop zone.
-To do so, you need to pass the jquery object representing the dropzone to this plugin, using the **dropzone** option.
-
-In order to help you style it, a css class is added when the mouse is dragging over the drop zone.
-This css class is "over" by default, and is appended to the dropzone element.
-You can change the css class being added using the "dropzoneOverClass" option.
-
-
-AjaxForm
------------
-The technique used by this plugin to upload files is to create a form (called ajax form) for every file uploaded.
-So basically, the file is validated, then the plugin creates an ajax form for that file, and sends the form
-via XMLHttpRequest to the backend server.
-And so, like with any form, we can add data to the form before it's being sent.
-This ajax form can be seen as an array of key/value pairs.
-By default, the created array contains only one key (with the name "item"), which holds the file to upload.
-
-Now, we can add extra fields to that form, for instance if we want to add a csrf token (and we should do so
-by the way, otherwise we would have a csrf issue).
-
-Most of the options related to the ajax form start with the "ajaxForm" prefix.
-
-Note: the form will be received in the $_FILES super array in a php backend.
-
-
-
-Progress handler
------------------
-Because creating a progress system from scratch can take some time, this plugin provides a built-in mechanism
-which displays the progress of the items as they are uploaded.
-
-This mechanism is off by default, and must be activated using the "useProgressHandler" option.
-When the "useProgressHandler" option is set to true, the mechanism is activated, and works like explained below.
-
-This progress handler displays a zone dedicated to showing the progress of the uploaded files.
-
-There is a progress handler container. This is the (html) element which will contain all the progress bars.
-If you use the progress handler, you must create this element in your html, and pass the jquery object referencing
-this container to this plugin, using the "progressHandlerContainer" option.
-
-Then, when at least one file is being uploaded, the base template is appended to this container.
-The base template like the skeleton/body of the container. By default, this skeleton displays a title,
-and a zone where to append all progress items.
-
-
-The skeleton must contain a zone (called list container) where all the progress bar will be injected.
-The skeleton is defined with the "progressHandlerContainerTemplate" option.
-
-By default, I use a bootstrap4 template, as bootstrap is a very common framework (plus, it's the one I'm using
-at the moment, so at least this plugin's defaults will fit my needs).
-However, just hook into this option to change the skeleton template as you like.
-
-Now the progress bars will be injected in the list container (which is inside the container skeleton).
-We use the "progressHandlerListContainerSelector" option, to help the plugin access the list container.
-The "progressHandlerListContainerSelector" option is a jquery selector which targets the list container, in the
-context of the container skeleton.
-
-Now, every time a file is being uploaded, a new progress item is appended to the list container.
-A progress item can have one of three different states:
-
-- **progressing**: the first state of the item, the file is being uploaded
-- **completed**: this state is reached when the file has been successfully uploaded
-- **erroneous**: an error occurred, and the upload was aborted/cancelled for some reason.
-         When this happens, this plugin will distinguish between two cases (corresponding to the corresponding ajax javascript event handlers):
-                 - abort: the file uploaded was aborted for some reason.
-                             In this case, the error message sent is defined with the "dict.uploadAborted" option.
-                             The available tags are:
-                             - {fileName}: the name of the file
-                 - error: an error occurred during the upload for some reason.
-                             In this case, the error message sent is defined with the "dict.uploadError" option.
-                             The available tags are:
-                             - {fileName}: the name of the file
-
-
-Note: the state of the item will transit from progressing to completed/erroneous (this plugin handles this transition automatically),
-depending on how the file upload evolves.
-
-The progress item template is defined with the "progressHandlerListItemTemplate" option.
-The template can use the following variables:
-- {iconClass}: a css class representing an icon
-- {fileName}: the name of the file
-- {fileSize}: the size of the file (using the most appropriate unit)
-- {progressBarClass}: a css class to add to the progress bar
-- {percent}: the percentage of the file being uploaded
-
-Some of those variables (iconClass and progressBarClass) might depend on the state of the item.
-Therefore, we can specify how those variables are affected by the state of the item using the "progressHandlerListItemVariables" option.
-This option is a javascript object with 3 entries (one per state), each entry defining the two variables.
-For example, the default value of this option is:
-
-- **progressing**:
-     - iconClass: fas fa-spinner fa-spin text-blue
-     - progressBarClass: bg-blue
-- **completed**:
-     - iconClass: fas fa-check text-green
-     - progressBarClass: bg-green
-- **erroneous**:
-     - iconClass: fas fa-exclamation-triangle text-red
-     - progressBarClass: bg-red
-
-
-Bear in mind that this progress handler is the most complex handler to configure.
-Take your time to understand how it works, and see if it can save you some time.
-
-Note: I believe that an item that is uploaded completely will make it to the backend server,
-whereas an aborted/erroneous item won't, although I didn't verify yet if that's actually true.
-
-
-
-
-Url to Form
----------------
-
-This built-in module will basically convert the json response from the server into input hidden fields in the target
-form.
-
- This might be useful for when you submit the form, if you want to get the result of your ajax upload in the posted data.
- Note: this might not be what you want though, for instance if you store the data directly from the backend service,
- you might not need this module.
  
- However if you need to treat all the posted data including the ones from the ajax upload form, then this module might help.
 
-The maximum number of fields created is governed by the maxFile option.
-The html name attribute of the generated input will be suffixed with the brackets ([]) if maxFile > 1.
-In other words, if maxFile = 1, then this module will generate one (and only one) input field which will create
-a scalar entry when the form is submitted,
-but if maxFile > 1, this module will generate (at most) $maxFile fields which will create an array when the form is submitted.
-Note: the trick to do that is simply to add the brackets ([]) at the end of the html name.
-If you want to use this module, you also need to define an html element that will contain them and pass its
-jquery reference to the "urlToFormContainer" option.
+Quickstart
+-----------
 
-The html name of the field to create is defined with the "urlToFormFieldName" option, and defaults to "the_file".
+This widget depends on jquery, and on jqueryui.sortable for the sortable feature.
 
-We can add a default value, using the "defaultValue" option, so that the plugin displays the input(s) corresponding
-to that value right away (i.e. when the form is loaded for the first time).
-
-
-File visualizer
----------------
-This module creates a thumbnail for every file uploaded.
-It's disabled by default. To enable this module set the "useFileVisualizer" option to true.
-If you do so, you also need to specify the fileVisualizerContainer option, which accepts a jquery object reference
-representing the container element.
-
-The user can (by default) delete the thumbnail by clicking the delete button on the right top corner of each thumbnail.
-This will remove the thumbnail, and the corresponding urlToForm item (if the urlToForm module is activated).
-
-How does it work?
-When the user uploads a file, the js client (this plugin) sends the file to the server which responds back with
-either a positive response or a negative response.
-A negative response indicates that the file couldn't be uploaded, and will result in showing an error message in the gui,
-and a thumbnail will never be created in this case.
-
-A positive response however indicates that the file has been successfully uploaded on the server, and the server sends
-back the url of the uploaded file.
-
-This module then creates the corresponding thumbnail and displays it in a container element.
-A maximum number of maxFile thumbnails will be drawn.
-When the user uploads more than maxFile files, the first thumbnail is removed and the new one is appended at the end,
-so that there is a rotation which ensures that there is always a maximum of $maxFile thumbnails in the visualizer container.
-
-How do the thumbnail look?
-
-You decide.
-There are two templates that let you control the appearance of the thumbnail: one is used if the uploaded file is
-an image (jpg, png, gif, bmp), and the other in case the uploaded file is not an image.
-Those two templates you can define using the
-fileVisualizerImageTemplate and fileVisualizerNotImageTemplate options.
-
-I provide some default values for those.
-Speaking of default values, I provide a whole built-in theme for the file visualizer, and to use it you just
-need to add the ".file-uploader-filevisualizer" css class to your container (referenced by the "fileVisualizerContainer" option).
-The theme I created can be found in the fileuploader.scss file.
-
-Then you can add the ".w100" css class to the container, in order to specify that you want the thumbnails to be
-of width 100. Look at the css code to see how it's done, and should you want to have thumbnails of a different size,
-you could simply do it from the css by copy-pasting the ".w100" class and creating your own from there.
-
-
-If the uploaded file is not an image, we can be very specific and display a different thumbnail depending
-on the file extension, using the fileVisualizerExtension2icon option.
-Or if we don't need that much control, we can just define a fallback extension for all non-image files, using the
-fileVisualizerFallbackIcon option.
-Those options define the class of an icon that is applied to an "i" tag.
-This module provides the following default values:
-
-- fileVisualizerFallbackIcon: far fa-file-alt
-- fileVisualizerExtension2icon:
-     - doc: far fa-file-word
-     - docx: far fa-file-word
-     - mp4: far fa-file-video
-     - wmv: far fa-file-video
-     - ... (have a look at the default options in the source code below for the full list)
-
-
-
-Last but not least, we can decide whether the user has the ability to remove the thumbnail using the fileVisualizerAllowDeleteAction option,
-which is true by default.
-
-Now all this applies only if you use the default template.
-However, if you customize your file visualizer templates, you can use the following tags to yield similar capabilities:
-
-- {fileUrl}: the url of the file
-- {fileUrlEscaped}: the url of the file ready to be inserted in src or href attributes (i.e. the html special chars are protected)
-- {fileName}: the name of the file
-- {fileSize}: the size of the file in a human appropriated unit
-- {iconClass}: the icon class chosen by the module algorithm.
-             If the uploaded file is an image, this option is set to an empty string.
-             If the uploaded file is not an image, this option is set to either a value from the fileVisualizerExtension2icon option (if
-             the extension of the uploaded file is in this array), or the fileVisualizerFallbackIcon otherwise.
-- {allowDelete}: delete-allowed|delete-not-allowed. A string that indicates the value of the "fileVisualizerAllowDeleteAction" option.
-                 I use it in the default templates to hide (from the css) the close button if the option is set to false.
-
-
-
-Also, the ".fileuploader-close-button" class can be added to any element, and it will transform this element into
-the trigger to remove the thumbnail (see how it's done in the default template: the fileVisualizerImageTemplate option).
-
-
-Note: the "defaultValue" option is used by both the urlToForm module and the fileVisualizer module.
-
-
-
-Examples
-==========
-
-
-
-Simplest example
----------
-
-Here is the simplest example.
-
-It does nothing but display an html form.
-But hey, when you choose a file, look at your inspector, a successful ajax request has been sent to 
-the **/backend-success.php** script.
-
-Notice the multiple attribute associated with the input tag.
-This allows the user to select multiple files at the same time (using shift click) rather than just one.
-
-
-
-Important note: in the next examples, I will not include the assets to save space and have a more readable
-documentation.
-
-
-In the next example we will start by displaying errors that might occur from the backend server.
-
+Paste this in your web editor:
 
 ```html
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
-<link rel="stylesheet" href="/libs/fileuploader/fileuploader.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
 
 
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha256-rByPlHULObEjJ6XQxW/flG2r+22R5dKiAoef+aXWfik=" crossorigin="anonymous" />
+
+
+    <link rel="stylesheet" href="/libs/universe/Ling/JFileUploader/theme/theme-default.css">
+
+</head>
+
+
+<body>
 
 
 <form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
+    <div id="file-container" class="fileuploader-widget theme-default"></div>
     <input type="submit" value="Submit"/>
+
+
 </form>
-
-
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
 
-
-<script src="/libs/fileuploader/fileuploader.js"></script>
-
-
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-success.php",
-        });
-    });
-</script>
-```
-
-
-Displaying errors
---------------
-
-Js file uploader doesn't display errors by default.
-In order to display errors, we need to use the errorContainer module.
-
-This is done by setting the options **useErrorContainer** and **errorContainer**.
-There is more to this module, but that's the base.
-
-Also, this module requires quite a lot of work: we need to prepare an html element which will host the errors,
-and we need to hide it from the view (display: none).
-
-Don't worry, other modules are generally easier to setup.
-
-
-
-
-```html
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
-    <input type="submit" value="Submit"/>
-</form>
-
-
-
+<script src="/libs/universe/Ling/JFileUploader/fileuploader.js"></script>
+<script src="/libs/universe/Ling/JFileUploader/lang/lang-eng.js"></script>
+<!--<script src="/libs/universe/Ling/JFileUploader/lang/lang-fra.js"></script>-->
+<script src="/libs/universe/Ling/JFileUploader/theme/theme-default.js"></script>
 
 
 <script>
     $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-error.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
+        var fileUploader = new FileUploader({
+            theme: "default",
+            container: $("#file-container"),
+            urls: [
+                "/plugins/Light_Kit_Admin/img/avatars/root_avatar.png",
+                "/img/cat.png",
+            ],
+            name: "avatar_url",
+            maxFile: 5,
+            maxFileSize: -1,
+            mimeType: null,
+            serverUrl: "/libs/universe/Ling/JFileUploader/uploader-mocks/upload-success.php",
+            themeOptions: {
+                defaultView: "image",
+                // defaultView: "text",
+                showHiddenInput: false,
+            },
         });
+        fileUploader.init();
+
     });
 </script>
+</body>
+</html>
 ```
 
 
-Validation
--------------
-
-Now that our errors are displayed, let's display some validation errors to see how it looks like.
-There are different things we can validate: 
-- the max file size
-- the mime type
-
-In this example, I set a very low max file size (5 bytes), so that almost any file you will upload will fail the validation test.
+All the resources required for this tutorial are located in the assets directory: [https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader](https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader).
 
 
-Upload an image and you will see the validation error message appear on your screen. 
-Notice that the validation phase occurs BEFORE the file is even sent to the server.
+Then:
+- Make sure all the references to the plugin assets (js and css files) are honoured.
+- Then optionally replace the urls (/img/cat.png...) with some existing images (those are not in the assets directory, you need to provide your own).
+- Then make sure the **serverUrl** leads to the **upload-success.php** script found in the **uploader-mocks** folder.
 
-Now in this case, since the validation failed, the file WILL NOT be sent to the server.
 
-
-```html
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
-    <input type="submit" value="Submit"/>
-</form>
+Once you've done all that you should be able to see the working plugin in action.
 
 
 
+Documentation
+=================
+2020-01-23
 
 
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-error.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: 5,
-        });
-    });
-</script>
-```
 
-
-Drop zone
+The synopsis
 ----------
+2020-01-23
 
-It's kind of boring to have to click on the input file, then choose a file.
 
-Let's create a dropzone, so that we can drag'n'drop our files directly.
+This widget is meant to be used in an html form, like any other form control.
+When the form is posted, what you will get via POST is either an url, or an array of urls, depending on the **maxFile** value (see the FileUploader object section
+in this document for more details). 
 
-To make the js file uploader react to a drop zone, we need to create a drop zone element,
-and reference it to the js file uploader plugin.
+What happens under the hood is that this widget creates some hidden input of type="text".
+And the values of those hidden inputs are the urls corresponding to the files being uploaded.
 
-When we do this, this activates the dropzone module automatically.
+If maxFile=1, only one hidden input is created, and a scalar value will be passed via POST (i.e. the name
+attribute of the input doesn't end with the square brackets []).
 
+If maxFile > 1, then that many hidden inputs are created, and an array of values will be passed via POST (i.e. the name
+attribute of the input will end with the square brackets []).
 
-Notice that I used the ".file-uploader-dropzone" css class on the drop zone.
-This refers to a built-in style that you can find in the tiny **fileuploader.css** file.
 
-It basically creates some padding and a dashed border around the dropzone.
 
 
-```html
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
 
-    <div class="file-uploader-dropzone" id="id-fileuploader-dropzone">Or drop file</div>
 
 
-    <input type="submit" value="Submit"/>
-</form>
+The widget html structure
+------------
+2020-01-23
 
 
+The core expects the widget to have the following html structure:
 
+- .fileuploader-widget: the html element containing the whole widget.
+    It's used by theme files to style the whole widget, and therefore
+    the theme css class must be put on that same element in order to apply a theme
+    to the widget.
+    
+    - .input-file: the hidden file input that's used to hold the change event 
+    - .fileuploader-item: an item representing a file. It's used to obtain the index of the file. 
+     - .btn-remove-file: the remove file button.  
+    - .fileuploader-item-container: a container of fileuploader-item, it's used to implement the sortable feature. 
+    - .dropzone: the element into which the user can drop files
+    - .last-dragged-item: the element that was last dragged. It's used by the default theme which provides 2 views, to 
+     sync the reordering of items in the 2 views simultaneously.
+    
+    - .btn-add-file: the add file button replacing the hidden file input (I use this because it's visually more pleasing than the default input)
+    - .btn-view-image: the button to switch to image view  
+    - .btn-view-text: the button to switch to text view  
+    - .btn-remove-error: the button to remove an error. Each error has one.  
+    - .btn-start-upload: the button to start the upload of queued files.  
 
 
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-error.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: 5,
-            dropzone: $("#id-fileuploader-dropzone"),
-        });
-    });
-</script>
-```
 
 
-Progress handler
---------------
-Sometimes we need to upload big files, like video.
+General overview of the objects
+--------------------
+2020-01-24
 
-It would be kind of cool if we had a progress bar showing the progress of the upload while it's uploading.
+In this version, rather than having everything handled by one all powerful object, I split the responsibilities into
+multiple objects that work together.
+As a result, the code is more readable and the widget is easier to extend.
 
-Well, the js file uploader plugin provides us with the progress handler module which does just that.
+A brief overview of the different objects is exposed in this section.
+And the most important objects (named followed by an asterisk) have also their own section later in this document.
 
-Again, we need to activate the module, and create an empty element which will hold the progress bars.
 
-Of course, we could rebuild one of our own, but if you want a quick progress handler you can use this module,
-which by the way is quite customizable (see the doc for more details).
+- Dispatcher: it's responsible for implementing the observer/notify pattern. It's a simple object that can trigger events,
+    and allow listeners to subscribe to an event. It's a very simple piece, but a very important one too.
+- Validator: when the user selects a file, the validator checks that the file is ok. It can check the file size and the
+    file mime type. The developer decides what to check. 
+    When a file is erroneous, it's not stacked into the widget, but rather an error message is displayed.
+    Note: when the file is uploaded, a server side script performs a similar checking.    
+- FileList*: the file list contains all the files handled by the widget. There are two types of files: the queued files
+    and the url files. See more in the file list section.
+    
+- UploaderEngine: this object is responsible for uploading the queued files.
+- GlobalProgressTracker: this is a helper for the UploaderEngine object. It helps tracking the global percent of
+    the queue being uploaded (because the queue can contain more than one file).
+- FileUploader*: this is the core object. It's the one we instantiate with some options, and the one that controls all the others.
+    I like to see it as the controller object.
+- the theme object*: 
+    The theme is the object responsible for painting the gui parts of the widget.
+    This includes building the whole widget, but also updating some parts of it (for instance when a file is being uploaded,
+    updating the progress bar).
+    
+    This object's code lies in a separate theme file.
+    The name of that object depends on the theme. For instance the default theme object's name is **FileUploaderTheme_Default**.
+    If you wanted to create a bootstrap theme, you would name the object **FileUploaderTheme_Bootstrap** for instance.
+    
+    
 
-Try to drop a video to see the progress bar (if the file is too small, the uploading will be too fast and you'll not
-see the progress bars).
 
-I forgot to mention that by default the progress bars style use bootstrap4.
-So, we need to include the bootstrap4 assets for a better rendering, but for this example I will not include them
-(I just want to give functional examples, I don't care about design yet).
 
 
 
-```html
 
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
 
-    <div class="file-uploader-dropzone" id="id-fileuploader-dropzone">Or drop file</div>
-    <div id="id-fileuploader-progress"></div>
-
-
-    <input type="submit" value="Submit"/>
-</form>
-
-
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-success.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: -1, // -1 means any size is allowed
-            dropzone: $("#id-fileuploader-dropzone"),
-            useProgressHandler: true,
-            progressHandlerContainer: $('#id-fileuploader-progress'),
-        });
-    });
-</script>
-```
-
-
-urlToForm module, creating some inputs
-------------------
-All that we did so far was pretty fun, but if we were to post the form right now we wouldn't have the
-uploaded files in our $_POST array.
-
-Now with the urlToForm module activated, the js file uploader will actually create one input per file uploaded.
-
-The maximum number of files that we can upload is ONE by default.
-Let's raise that number a bit so that we can play with the urlToForm module and see how it behaves.
-
-In fact, you will observe that if maxFile is equal to one, the urlToForm module creates one input which will
-create a scalar value (i.e. a string) in your $_POST array.
-
-However when maxFile is more than one, the urlToForm module creates as many inputs as there are uploaded files,
-and the value in your $_POST array is an array.
-
-To setup the urlToForm module, we need to activate the module, and define an html container.
-
-
-Play with maxFile, and see what happens. Note: you'll need to inspect the source code (dynamically),
-since the added inputs are of type hidden (they won't show up on the screen).
-
-You might also notice that all inputs have the same url of **/uploads/my-video.mp4**,
-that's just because the backend service is a fake service that returns this string.
-
-In production, you would code a real upload service which would return the file that you uploaded.
-
-
-
-
-```html
-
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
-
-    <div class="file-uploader-dropzone" id="id-fileuploader-dropzone">Or drop file</div>
-    <div id="id-fileuploader-progress"></div>
-    <div id="id-fileuploader-urltoform"></div>
-
-
-    <input type="submit" value="Submit"/>
-</form>
-
-
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-success.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: -1, // -1 means any size is allowed
-            dropzone: $("#id-fileuploader-dropzone"),
-            useProgressHandler: true,
-            progressHandlerContainer: $('#id-fileuploader-progress'),
-            maxFile: 3,
-            useUrlToForm: true,
-            urlToFormContainer: $('#id-fileuploader-urltoform'),
-        });
-    });
-</script>
-```
-
-
-
-
-File visualizer module
-----------------
-
-Another thing that we can do with the js file uploader is make it show us a preview of the uploaded files.
-
-Now when the uploaded file is an image, the image would be displayed, but in this example, the backend service
-returns a video, so a video icon will be displayed by default.
-
-Look at the various options provided by this module to customize it the way you want.
-
-
-Again, like most other modules, the setup consist of activating the module and creating a container html element.
-
-
-You will also notice that I used some special css classes: **.file-uploader-filevisualizer** and **.w100**.
-Those are built-in css classes that you can find in the tiny **fileuploader.css** file.
-They will give a basic styling to the file visualizer, and make sur that the generated thumbnails have a width of 100px.
-
-
-```html
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
-
-    <div class="file-uploader-dropzone" id="id-fileuploader-dropzone">Or drop file</div>
-    <div id="id-fileuploader-progress"></div>
-    <div id="id-fileuploader-urltoform"></div>
-    <div id="id-fileuploader-filevisualizer" class="file-uploader-filevisualizer w100"></div>
-
-
-    <input type="submit" value="Submit"/>
-</form>
-
-
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-success.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: -1, // -1 means any size is allowed
-            dropzone: $("#id-fileuploader-dropzone"),
-            useProgressHandler: true,
-            progressHandlerContainer: $('#id-fileuploader-progress'),
-            maxFile: 3,
-            useUrlToForm: true,
-            urlToFormContainer: $('#id-fileuploader-urltoform'),
-            useFileVisualizer: true,
-            fileVisualizerContainer: $('#id-fileuploader-filevisualizer'),
-        });
-    });
-</script>
-```
-
-
-
-Callbacks
+The FileUploader object
 -----------
-
-I believe we've seen all the modules already, at least the surface of them.
-
-Now what we can do is hook some custom logic into the plugin using callbacks.
-
-The js file uploader plugin provides us with the following callbacks:
-
-- onReceive: allow us to validate a file with some custom logic
-- onProgress: allow us to implement a custom progress handler
-- onError: allow us to do something whenever an error occurs
-- onSuccess: allow us to do something whenever a file is successfully uploaded on the server (the backend returned a success response)
+2020-01-23
 
 
-I'm pretty sure you can figure how those work on your own, but I will give you at least one example.
-In this section, I'll show you how to invalidate a file name which contains the word justinbieber (nothing personal).
+The **FileUploader** is the main object representing this widget.
+Its constructor takes some options which control the behaviour of the widget.
 
+Those options are:
 
-Now try to upload a file named **justinbieber.png** for instance, and you won't be able to.
-
-Notice that we can use the addError method from inside this callback, to add an error the "official" way.
-
-```html
-<form action="" method="post">
-    <input type="file" id="id-my-file" name="my_file" multiple>
-    <div id="id-fileuploader-error-container" style="display: none">
-        <strong>Oops!</strong> The following errors occurred:
-        <ul>
-        </ul>
-    </div>
-
-    <div class="file-uploader-dropzone" id="id-fileuploader-dropzone">Or drop file</div>
-    <div id="id-fileuploader-progress"></div>
-    <div id="id-fileuploader-urltoform"></div>
-    <div id="id-fileuploader-filevisualizer" class="file-uploader-filevisualizer w100"></div>
-
-
-    <input type="submit" value="Submit"/>
-</form>
-
-
-<script>
-    $(document).ready(function () {
-        $('#id-my-file').fileUploader({
-            serverUrl: "/backend-success.php",
-            useErrorContainer: true,
-            errorContainer: $('#id-fileuploader-error-container'),
-            maxFileSize: -1, // -1 means any size is allowed
-            dropzone: $("#id-fileuploader-dropzone"),
-            useProgressHandler: true,
-            progressHandlerContainer: $('#id-fileuploader-progress'),
-            maxFile: 3,
-            useUrlToForm: true,
-            urlToFormContainer: $('#id-fileuploader-urltoform'),
-            useFileVisualizer: true,
-            fileVisualizerContainer: $('#id-fileuploader-filevisualizer'),
-            onReceive: function (file, index) {
-                if (-1 !== file.name.indexOf("justinbieber")) {
-                    this.addError("I don't want to upload that file sorry");
-                    return false;
-                }
-                return true;
-            }
-        });
-    });
-</script>
-```
+- container: mandatory. Jquery object representing the html element that contains the whole widget.
+- theme: optional, string=default. The name of the theme to use.
+         In order to use a theme, the theme file must be included first.
+- maxFile: optional, int=1. The maximum number of files handled by this instance.
+     If more than 1 file, this widget will create an array of input type hidden (one per file),
+     and the name attribute will end with square brackets ([]).
+     If exactly 1 file, this widget will create a single input type hidden, and the name attribute
+     will not end with square brackets.
+- dropzoneOverClass: optional, string=dropzone-hover. The css class to add when the dropzone is hovered by the user.
+- urls: optional, array=[]. The urls to start with. The urls will be converted to fileUrls. See the documentation for more details.
+- name: optional, string=the_file. The html name of the file. This name attribute will be added to the hidden input(s). See the documentation for more info.
+- maxFileSize: optional, int = -1, the maximum number of bytes per file. Use -1 (negative one) to allow any size.
+- mimeType: optional, array|string|null = null, the allowed mime type(s). By default, mimeType equals null, which means all mime types are allowed.
+- uploadItemName: optional, string = item, the name of the uploaded file when sent to the server side script handling the upload.
+- uploadItemExtraFields: optional, map = {}, an extra map of data to send to the server when uploading a file.
+- serverUrl: optional, string = /upload.php, the url of the server script responsible for handling the uploading.
+     A certain communication protocol is expected, see the conception notes for more details, or the example files in this repository,
+     or the source code below.
+- immediateUpload: optional, bool=false, whether to upload the file immediately after the user selected it.
+    If false, then the user needs to manually click the "Upload files" button to upload the files.     
+- themeOptions: optional, map = {}, a map of options to pass to the theme's buildFileUploader method. Refer to the theme's file to see the available options.
 
 
 
-So that's it for now. Those are just basic examples, but hopefully they'll get you started.
+The FileList object
+-----------
+2020-01-24
 
-The js file uploader is quite flexible, I hope it will save you some time.
+The filelist object holds the files managed by this plugin.
+There are two types of files, both of which are based on the javascript File object.
+
+
+- the queued file
+- the url file
+
+When file(s) are added by the user via the control (via "open file" dialog in the browser or dropzone),
+they are added to the queue, and so they are **queue files**. 
+
+When a queued file is then being uploaded, it becomes an **url files** (and a hidden input is created and bound to it).
+Also, when a form is in update mode and is initialized with some urls already, those urls are represented as **url files**
+in the widget.
+
+
+Both objects are based on the javascript File object, but they add extra properties to it:
+
+- queue file:
+    - itemId: the item id is used to target the item html. It's an unique identifier assigned to every file.
+- url file:
+    - itemId: the item id is used to target the item html. It's an unique identifier assigned to every file.
+    - id: the id of the file, used to keep track of the bound hidden input 
+    - url: the url of the file
+
+
+
+The theme object
+--------------
+2020-01-23
+
+
+The theme is a painter object, it paints the html and give the widget its look.
+
+Each theme is encoded in its own file, for organization sake.
+
+There is a default theme provided, which code lies in the following files:
+
+- https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader/theme/theme-default.js
+- https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader/theme/theme-default.css 
+
+
+To create your own theme, copy the code from the **theme-default.js** file, and adapt it to your likings.
+
+To use a theme, its js file must be included, and then when you instantiate the **FileUploader** object (see the 
+Fileuploader object section for more details) you pass the **theme** option to it, which takes the theme name as an argument
+(each theme has its own name).  
+
+
+Here are the theme methods used by the core:
+
+- buildFileUploader ( themeOptions ): builds the main widget
+- addUserError ( errorMsg ): adds an user error message
+- addFile ( oFile ): adds a file
+- addHiddenInput ( url, id ): adds an hidden input 
+- removeHiddenInputById ( id ): remove an hidden input
+- updateFooterInfo ( oFiles ): updates the information in the footer (global size, number of files, those kind of things)
+- removeFileByIndex ( index ): removes a file from the widget
+- reorderFiles ( oFiles, oldIndex, newIndex ): reorder the files after the user sorts them. To better understand this,
+    it's helpful to know that the default theme has two possible views: an image view and a text view, and both show the 
+    same files, and therefore they both need to be synchronized with each other. So when the user re-arrange the order
+    of the file in one view, the other view has to be updated too (hence this method).
+- refreshProgress ( oFile, percent, loaded, total, globalPercent ): updates the gui so that it reflects the progress of a given file.
+- hideUploadButton ( ): if the widget works in immediate upload mode (a file selected by the user is immediately uploaded), then
+    we don't need the upload button. This method just hides the upload button.
+- removeUserErrorByTarget ( jTarget ): removes an user error message.
+
+
+
+
+Lang
+--------
+2020-01-24
+
+To translate the widget in a different language, we need to include the corresponding lang file, which resides in the **lang** directory.
+The available languages are:
+
+- english (lang/lang-eng.js)
+- french (lang/lang-fra.js)
+
+
+To create a new lang, just copy the french or english file and change the translations.
+If your language has more than one plural form, you might need to do some extra coding, as the french and english both
+have a single plural form.
 
 
 
@@ -966,6 +432,10 @@ History Log
 =============
 
 
+- 2.0.0 -- 2020-01-24
+
+    - new version
+    
 - 1.2.2 -- 2019-11-25
 
     - reorganized assets
