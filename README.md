@@ -45,6 +45,7 @@ Table of Contents
   * [The FileList object](#the-filelist-object)
   * [The theme object](#the-theme-object)
   * [Lang](#lang)
+  * [Server side script](#server-side-script)
 * [History Log](#history-log)
 
 
@@ -426,12 +427,43 @@ have a single plural form.
 
 
 
+Server side script
+---------------
+2020-01-24
+
+
+It's expected that the communication with the server side script works like this.
+
+
+The client (this plugin) sends the following to the server via POST:
+
+- item: the javascript file object (if you are using php, this will be available in the php $_FILES super array)
+- ...other optional custom parameters defined by the developer, and sent via POST.
+
+The response of the server must be a json array:
+
+- in case of success, the json array structure should be:
+    - **type**: success
+    - **url**: (the url to the uploaded file treated by the server)
+
+- in case of error, the json array structure should be:
+    - **type**: error
+    - **message**: (the error message here...)
+
+
+
+
+
 
 
 History Log
 =============
 
 
+- 2.0.1 -- 2020-01-24
+
+    - add server side script section in README.md
+    
 - 2.0.0 -- 2020-01-24
 
     - new version
