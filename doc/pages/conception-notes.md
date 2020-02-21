@@ -314,7 +314,8 @@ and the main js controller (the brain of the widget).
 
 Widget class map
 ---------
-2020-01-14
+2020-01-14 -> 2020-01-24
+
 
 - .fileuploader-widget: the html element containing the whole widget.
     It's used by theme files to style the whole widget, and therefore
@@ -324,6 +325,8 @@ Widget class map
     - .input-file: the hidden file input that's used to hold the change event 
     - .fileuploader-item: an item representing a file. It's used to obtain the index of the file. 
         - .btn-remove-file: the remove file button.  
+    - data-id=$itemId: the theme is responsible for adding this attribute on the same element than the .fileuploader-item.
+        It's used by the core to access the inner file from a click in the gui.         
     - .fileuploader-item-container: a container of fileuploader-item, it's used to implement the sortable feature. 
     - .dropzone: the element into which the user can drop files
     - .last-dragged-item: the element that was last dragged. It's used by the default theme which provides 2 views, to 
@@ -334,6 +337,11 @@ Widget class map
     - .btn-view-text: the button to switch to text view  
     - .btn-remove-error: the button to remove an error. Each error has one.  
     - .btn-start-upload: the button to start the upload of queued files.  
+    - .btn-edit-file: the button to open the file editor dialog.  
+
+
+
+
 
          
          

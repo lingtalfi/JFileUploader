@@ -82,7 +82,7 @@
         padding: 0; }
         .fileuploader-widget.theme-default .dropzone .dropzone-text .dropzone-text-container ul .cell-name {
           padding-left: 10px; }
-        .fileuploader-widget.theme-default .dropzone .dropzone-text .dropzone-text-container ul button.btn-remove-file {
+        .fileuploader-widget.theme-default .dropzone .dropzone-text .dropzone-text-container ul button.btn-remove-file, .fileuploader-widget.theme-default .dropzone .dropzone-text .dropzone-text-container ul button.btn-edit-file {
           border: none;
           margin: 0;
           padding: 0;
@@ -119,7 +119,7 @@
           position: absolute;
           top: 1px;
           right: 1px; }
-          .fileuploader-widget.theme-default .dropzone .dropzone-image .filelist .dropzone-image-item-container .cell-action button.btn-remove-file {
+          .fileuploader-widget.theme-default .dropzone .dropzone-image .filelist .dropzone-image-item-container .cell-action button.btn-remove-file, .fileuploader-widget.theme-default .dropzone .dropzone-image .filelist .dropzone-image-item-container .cell-action button.btn-edit-file {
             border: none;
             margin: 0;
             padding: 0;
@@ -149,5 +149,110 @@
       .fileuploader-widget.theme-default .footer .right .footer-info:not(:last-child) {
         border-right: 1px solid #aaa;
         padding: 0 7px; }
+
+.file-editor.dropzone-hover {
+  background: #f3f7ff; }
+.file-editor .file-editor-error-container .file-editor-error {
+  color: white;
+  padding: 10px;
+  border: 1px solid #cd0a0a;
+  background: #cd0a0a;
+  margin-bottom: 2px;
+  position: relative; }
+  .file-editor .file-editor-error-container .file-editor-error .btn-close-error {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    cursor: pointer; }
+.file-editor .file-editor-block-1 {
+  display: flex; }
+  .file-editor .file-editor-block-1 .control-privacy {
+    margin-left: auto; }
+.file-editor .control-group {
+  margin-bottom: 0px;
+  border-bottom: 1px solid #fdfdfd;
+  padding-bottom: 10px;
+  padding-top: 10px; }
+  .file-editor .control-group.control-basename, .file-editor .control-group.control-tags {
+    display: flex;
+    align-items: baseline; }
+    .file-editor .control-group.control-basename label, .file-editor .control-group.control-tags label {
+      margin-right: 5px;
+      white-space: nowrap; }
+  .file-editor .control-group.control-tags {
+    align-items: flex-end; }
+  .file-editor .control-group .element-dirname {
+    background: #ececec;
+    padding: 5px; }
+  .file-editor .control-group .filename-inputs-container {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box; }
+    .file-editor .control-group .filename-inputs-container .input-basename {
+      flex: 1;
+      margin-top: 7px; }
+    .file-editor .control-group .filename-inputs-container .input-extension {
+      width: 50px;
+      margin-top: 7px; }
+  .file-editor .control-group.control-tags label {
+    display: block;
+    margin-bottom: 10px; }
+  .file-editor .control-group.control-tags .select-tags {
+    display: block;
+    width: 100%; }
+.file-editor .image-editor-container {
+  margin-top: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px; }
+.file-editor .image-editor-header {
+  display: flex; }
+  .file-editor .image-editor-header .control-original-toggle {
+    margin-left: auto; }
+.file-editor .img-container {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  max-height: 497px;
+  min-height: 200px; }
+  .file-editor .img-container > img {
+    max-width: 100%; }
+@media (min-width: 768px) {
+  .file-editor .img-container {
+    min-height: 497px; } }
+.file-editor .image-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  background: #d9d9d9;
+  padding: 10px;
+  justify-content: flex-start; }
+  .file-editor .image-editor-toolbar button {
+    padding: 6px 4px 4px 4px;
+    border-radius: 7px;
+    border-color: #ececec; }
+.file-editor .img-preview-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center; }
+  .file-editor .img-preview-container .img-preview {
+    float: left;
+    margin-bottom: .5rem;
+    margin-right: .5rem;
+    overflow: hidden; }
+    .file-editor .img-preview-container .img-preview.preview-lg {
+      height: 9rem;
+      width: 16rem; }
+    .file-editor .img-preview-container .img-preview > img {
+      max-width: 100%; }
+.file-editor .the-submit-button {
+  background: #0064ff;
+  color: white; }
+.file-editor .fileeditor-uploader-progress {
+  display: none;
+  background: transparent;
+  color: #333;
+  border: none;
+  cursor: default !important; }
+  .file-editor .fileeditor-uploader-progress:active {
+    background: transparent;
+    color: #333; }
 
 /*# sourceMappingURL=theme-default.css.map */

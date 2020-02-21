@@ -1,15 +1,16 @@
-.fileuploader-widget.theme-default {
+$padding: 10px;
+$bgColor: #eee;
+$dropzoneTextHeaderHeight: 20px;
+$errorColor: #cd0a0a;
 
-  $padding: 10px;
-  $bgColor: #eee;
-  $dropzoneTextHeaderHeight: 20px;
-  $errorColor: #cd0a0a;
+
+.fileuploader-widget.theme-default {
 
 
   position: relative;
   border: 1px solid #999;
 
-  button{
+  button {
     cursor: pointer;
   }
 
@@ -139,7 +140,7 @@
             padding-left: 10px;
           }
 
-          button.btn-remove-file {
+          button.btn-remove-file, button.btn-edit-file {
             border: none;
             margin: 0;
             padding: 0;
@@ -200,15 +201,15 @@
             top: 1px;
             right: 1px;
 
-            button.btn-remove-file {
+            button.btn-remove-file, button.btn-edit-file {
               border: none;
               margin: 0;
               padding: 0;
               cursor: pointer;
               color: #919191;
               background: transparent;
-
             }
+
           }
 
         }
@@ -249,5 +250,204 @@
   }
 }
 
+
+.file-editor {
+
+  &.dropzone-hover {
+    background: #f3f7ff;
+  }
+
+  .file-editor-error-container {
+    .file-editor-error {
+      color: white;
+      padding: 10px;
+      border: 1px solid $errorColor;
+      background: $errorColor;
+      margin-bottom: 2px;
+      position: relative;
+
+      .btn-close-error {
+        position: absolute;
+        top: 3px;
+        right: 4px;
+        cursor: pointer;
+
+      }
+    }
+  }
+
+  .file-editor-block-1 {
+    display: flex;
+
+
+    .control-privacy {
+      margin-left: auto;
+    }
+  }
+
+  .control-group {
+
+    margin-bottom: 0px;
+    border-bottom: 1px solid #fdfdfd;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+
+    &.control-basename, &.control-tags {
+      display: flex;
+      align-items: baseline;
+
+      label {
+        margin-right: 5px;
+        white-space: nowrap;
+      }
+    }
+
+    &.control-tags {
+      align-items: flex-end;
+    }
+
+
+    .element-dirname {
+      background: #ececec;
+      padding: 5px;
+    }
+
+
+    .filename-inputs-container {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+
+      .input-basename {
+        flex: 1;
+        margin-top: 7px;
+      }
+
+
+      .input-extension {
+        width: 50px;
+        margin-top: 7px;
+      }
+    }
+
+
+    &.control-tags {
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .select-tags {
+        display: block;
+        width: 100%;
+      }
+    }
+
+  }
+
+
+  //.img-container {
+  //  /* Never limit the container height here */
+  //  max-width: 100%;
+  //}
+  //
+  //.img-container img {
+  //  /* This is important */
+  //  width: 100%;
+  //}
+
+
+  .image-editor-container{
+    margin-top: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .image-editor-header {
+    display: flex;
+
+    .control-original-toggle {
+      margin-left: auto;
+    }
+  }
+
+  .img-container {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    max-height: 497px;
+    min-height: 200px;
+
+    & > img {
+      max-width: 100%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .img-container {
+      min-height: 497px;
+    }
+  }
+
+
+  .image-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    background: #d9d9d9;
+    padding: 10px;
+    justify-content: flex-start;
+
+
+    button {
+      padding: 6px 4px 4px 4px;
+      border-radius: 7px;
+      border-color: #ececec;
+    }
+
+  }
+
+
+  .img-preview-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+
+    .img-preview {
+      float: left;
+      margin-bottom: .5rem;
+      margin-right: .5rem;
+      overflow: hidden;
+
+      &.preview-lg {
+        height: 9rem;
+        width: 16rem;
+      }
+
+      & > img {
+        max-width: 100%;
+      }
+    }
+  }
+
+
+  .the-submit-button {
+    background: #0064ff;
+    color: white;
+  }
+
+  .fileeditor-uploader-progress {
+    display: none;
+    background: transparent;
+    color: #333;
+    border: none;
+    cursor: default !important;
+
+    &:active {
+      background: transparent;
+      color: #333;
+
+    }
+  }
+}
 
 

@@ -9,19 +9,19 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
             'Select files': [
                 'Select files',
             ],
-            'Drag files here' : [
+            'Drag files here': [
                 'Drag files here.',
             ],
-            'file(s)' : [
+            'file(s)': [
                 'file(s)',
             ],
-            'filename' : [
+            'filename': [
                 'Filename',
             ],
-            'status' : [
+            'status': [
                 'Status',
             ],
-            'size' : [
+            'size': [
                 'Size',
             ],
             'Add files': [
@@ -37,6 +37,9 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
             'err.maxFileExceeded': [
                 'Error with "{fileName}": The size cannot exceed {maxSize} (your file weights {fileSize}).',
             ],
+            'err.maxFileNameLength': [
+                'Error with "{fileName}": The file name cannot contain more than {maxLength} characters (the actual name contains {length} characters).',
+            ],
             'err.wrongMimeType': [
                 'Error with "{fileName}": Wrong mimetype: "{fileMimeType}" is not allowed. The allowed mime types are: {allowedMimeTypes}.',
             ],
@@ -46,17 +49,84 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
             'err.uploadAborted': [
                 'Error with "{fileName}": The upload was aborted for some reason.',
             ],
+            'Server error: ': [
+                'Server error: ',
+            ],
+            //----------------------------------------
+            // DIALOG
+            //----------------------------------------
+            'Submit': [
+                "Submit",
+            ],
+            'Cancel': [
+                "Cancel",
+            ],
+            //----------------------------------------
+            // file editor
+            //----------------------------------------
+            'File Editor': [
+                'File Editor',
+            ],
+            'Parent dir': [
+                'Parent dir',
+            ],
+            'File name': [
+                'File name',
+            ],
+            'Use original image': [
+                'Use original image',
+            ],
+            'Is private': [
+                'Is private',
+            ],
+            'Tags': [
+                'Tags',
+            ],
+            'Image Editor': [
+                'Image Editor',
+            ],
+            'Zoom In': [
+                'Zoom In',
+            ],
+            'Zoom Out': [
+                'Zoom Out',
+            ],
+            'Rotate Left': [
+                'Rotate Left',
+            ],
+            'Rotate Right': [
+                'Rotate Right',
+            ],
+            'Flip Horizontal': [
+                'Flip Horizontal',
+            ],
+            'Flip Vertical': [
+                'Flip Vertical',
+            ],
+            'Reset': [
+                'Reset',
+            ],
+            'Loading in progress: {x}%': [
+                'Loading in progress: {x}%',
+            ],
         };
 
 
         window.FileUploaderLang_Eng = function () {
         };
         window.FileUploaderLang_Eng.prototype = {
-            get: function (msgId, number) {
+            get: function (msgId, number, tags) {
                 /**
                  * In english, plural system is simple.
                  */
-                return this._get(msgId, number);
+                if ('undefined' === typeof tags) {
+                    return this._get(msgId, number);
+                }
+                var ret = this._get(msgId, number);
+                for (var key in tags) {
+                    ret = ret.replace('{' + key + '}', tags[key]);
+                }
+                return ret;
 
             },
             //----------------------------------------
@@ -64,7 +134,7 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
             //----------------------------------------
             _get: function (msg, number) {
 
-                if ('undefined' === typeof number || '' === number) {
+                if ('undefined' === typeof number || '' === number || null === number) {
                     return dict[msg][0]; // singular form
                 }
 

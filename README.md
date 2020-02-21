@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25 -> 2020-01-24
+2019-11-25 -> 2020-02-21
 
 
 
@@ -46,8 +46,13 @@ Table of Contents
   * [The theme object](#the-theme-object)
   * [Lang](#lang)
   * [Server side script](#server-side-script)
+  * [The file editor](#the-file-editor)
 * [History Log](#history-log)
 
+
+Conception notes:
+- [Conception notes](https://github.com/lingtalfi/JFileUploader/blob/master/doc/pages/conception-notes.md)
+- [File editor conception notes](https://github.com/lingtalfi/JFileUploader/blob/master/doc/pages/file-editor-conception-notes.md)
 
 
 
@@ -57,6 +62,7 @@ In a nutshell
 
 - allows you to handle one or multiple file uploads, using ajax and a server side script
 - inspired by plupload
+- has a cropper feature 
 - translated in english and french, other languages can be added easily
 - items can be sorted (this feature requires jqueryui sortable, graceful degradataion implemented)
 - it requires jquery
@@ -188,6 +194,69 @@ Paste this in your web editor:
 ```
 
 
+Alternately, if you want to use the **file editor** feature, you can initialize this plugin like this:
+
+```js
+    $(document).ready(function () {
+
+        var csrfToken = "<?php echo $csrfToken; ?>";
+
+        var fileUploader = new FileUploader({
+            theme: "default",
+            container: $("#file-container"),
+            urls: [
+                "/plugins/Light_Kit_Admin/img/avatars/root_avatar.png",
+                "/img/cat.png",
+                // "/user-data?id=f1581394664.3162-256",
+            ],
+            name: "avatar_url",
+            maxFile: 5,
+            maxFileSize: -1,
+            maxFileNameLength: 64,
+            mimeType: null,
+            serverUrl: "/libs/universe/Ling/JFileUploader/uploader-mocks/upload-success.php",
+            serverUrl: "/ajax_file_upload_manager",
+            uploadItemExtraFields: {
+                id: "lka_user_profile",
+                csrf_token: csrfToken,
+            },
+            immediateUpload: false,
+            fileEditor: {
+                useFileName: true,
+                useCropper: true,
+                usePrivacy: true,
+                useTags: true,
+                //
+                allowCustomTags: true,
+                fileName: null,
+                parentDir: "images",
+                availableTags: [
+                    "Maurice",
+                    "Taekwondo",
+                ],
+                privacyDefaultValue: 0,
+                originalDefaultValue: 0,
+                originalFixedValue: 0, // 0 | 1 | null
+                tagsMaxLength: 2,
+            },
+            themeOptions: {
+                defaultView: "image",
+                // defaultView: "text",
+                showHiddenInput: false,
+
+            },
+            useFileEditor: true,
+        });
+        fileUploader.init();
+
+
+    });
+
+```
+
+
+
+
 All the resources required for this tutorial are located in the assets directory: [https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader](https://github.com/lingtalfi/JFileUploader/tree/master/assets/map/www/libs/universe/Ling/JFileUploader).
 
 
@@ -233,7 +302,7 @@ attribute of the input will end with the square brackets []).
 
 The widget html structure
 ------------
-2020-01-23
+2020-01-23 -> 2020-01-24
 
 
 The core expects the widget to have the following html structure:
@@ -244,7 +313,9 @@ The core expects the widget to have the following html structure:
     to the widget.
     
     - .input-file: the hidden file input that's used to hold the change event 
-    - .fileuploader-item: an item representing a file. It's used to obtain the index of the file. 
+    - .fileuploader-item: an item representing a file. It's used to obtain the index of the file.
+    - data-id=$itemId: the theme is responsible for adding this attribute on the same element than the .fileuploader-item.
+        It's used by the core to access the inner file from a click in the gui.     
      - .btn-remove-file: the remove file button.  
     - .fileuploader-item-container: a container of fileuploader-item, it's used to implement the sortable feature. 
     - .dropzone: the element into which the user can drop files
@@ -256,7 +327,7 @@ The core expects the widget to have the following html structure:
     - .btn-view-text: the button to switch to text view  
     - .btn-remove-error: the button to remove an error. Each error has one.  
     - .btn-start-upload: the button to start the upload of queued files.  
-
+    - .btn-edit-file: the button to open the file editor dialog.  
 
 
 
@@ -452,6 +523,28 @@ The response of the server must be a json array:
 
 
 
+The file editor
+------------
+2020-02-21
+
+
+![File editor](https://lingtalfi.com/img/universe/JFileUploader/file-editor.png)
+
+
+The file editor is a gui interface that allows the user to edit a file.
+
+To open the file editor, you click on the edit icon of the file item (you need to use the fileEditor option in your configuration to allow this).
+ 
+The possible actions are possible, depending on your server and plugin configurations:
+
+- renaming the file 
+- defining the **is_private** property for the file 
+- defining the **tags** to attach to this file 
+- cropping the file if it's an image
+
+
+For more details, refer to the [file editor conception notes](https://github.com/lingtalfi/JFileUploader/blob/master/doc/pages/file-editor-conception-notes.md). 
+
 
 
 
@@ -460,6 +553,10 @@ History Log
 =============
 
 
+- 2.1.0 -- 2020-02-21
+
+    - add file editor
+    
 - 2.0.1 -- 2020-01-24
 
     - add server side script section in README.md
