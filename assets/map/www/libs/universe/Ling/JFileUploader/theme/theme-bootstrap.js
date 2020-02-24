@@ -283,46 +283,34 @@ if ('undefined' === typeof window.FileUploaderTheme_Boostrap) {
                         '\n' +
                         '            <div class="image-editor-toolbar">\n' +
                         '\n' +
-                        '\n' +
                         '                <div class="btn-group">\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="zoom" data-option="0.1"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="zoom" data-option="0.1"\n' +
                         '                            title="' + escapeHtml(sZoomIn) + '">\n' +
                         '                        <span class="fa fa-search-plus"></span>\n' +
                         '                    </button>\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="zoom" data-option="-0.1"\n' +
                         '                            title="' + escapeHtml(sZoomOut) + '">\n' +
                         '              <span class="fa fa-search-minus"></span>\n' +
                         '            </span>\n' +
                         '                    </button>\n' +
-                        '                </div>\n' +
-                        '\n' +
-                        '\n' +
-                        '                <div class="btn-group">\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="rotate" data-option="-45"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="rotate" data-option="-45"\n' +
                         '                            title="' + escapeHtml(sRotateLeft) + '">\n' +
                         '                        <span class="fa fa-undo-alt"></span>\n' +
                         '                    </button>\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="rotate" data-option="45"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="rotate" data-option="45"\n' +
                         '                            title="' + escapeHtml(sRotateRight) + '">\n' +
                         '              <span class="fa fa-redo-alt"></span>\n' +
                         '            </span>\n' +
                         '                    </button>\n' +
-                        '                </div>\n' +
-                        '\n' +
-                        '                <div class="btn-group">\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="scaleX" data-option="-1"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="scaleX" data-option="-1"\n' +
                         '                            title="' + escapeHtml(sFlipHorizontal) + '">\n' +
                         '                        <span class="fa fa-arrows-alt-h"></span>\n' +
                         '                    </button>\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="scaleY" data-option="-1"\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="scaleY" data-option="-1"\n' +
                         '                            title="' + escapeHtml(sFlipVertical) + '">\n' +
                         '                        <span class="fa fa-arrows-alt-v"></span>\n' +
                         '                    </button>\n' +
-                        '                </div>\n' +
-                        '\n' +
-                        '\n' +
-                        '                <div class="btn-group">\n' +
-                        '                    <button type="button" class="btn btn-primary" data-method="reset" title="' + escapeHtml(sReset) + '">\n' +
+                        '                    <button type="button" class="btn btn-sm ' + btnColor + '" data-method="reset" title="' + escapeHtml(sReset) + '">\n' +
                         '                        <span class="fa fa-sync-alt"></span>\n' +
                         '                    </button>\n' +
                         '                </div>\n' +
