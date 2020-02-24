@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25 -> 2020-02-21
+2019-11-25 -> 2020-02-24
 
 
 
@@ -553,6 +553,10 @@ History Log
 =============
 
 
+- 2.1.1 -- 2020-02-24
+
+    - fix jquery ui dialog not draggable
+    
 - 2.1.0 -- 2020-02-21
 
     - add file editor

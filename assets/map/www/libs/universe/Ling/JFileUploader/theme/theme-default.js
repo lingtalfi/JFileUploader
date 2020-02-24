@@ -382,6 +382,7 @@ if ('undefined' === typeof window.FileUploaderTheme_Default) {
                     this.fileEditorDialog = this.container.find(".dialog-file-editor").dialog({
                         autoOpen: false,
                         modal: true,
+                        draggable: true,
                         open: function () {
 
                             if (true === $this.fileEditorDialogOpenOptions.showCropper) {

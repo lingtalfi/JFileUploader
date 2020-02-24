@@ -735,11 +735,15 @@
                     var jDropZone = jDialog;
 
                     function dragstart(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
 
-                        // https://stackoverflow.com/questions/10119514/html5-drag-drop-change-icon-cursor-while-dragging
-                        e.dataTransfer.effectAllowed = "copyMove";
+                        /**
+                         * I removed this because it prevented the jquery ui dialog (holding the file editor) to be dragged.
+                         */
+
+                        // e.stopPropagation();
+                        // e.preventDefault();
+                        // // https://stackoverflow.com/questions/10119514/html5-drag-drop-change-icon-cursor-while-dragging
+                        // e.originalEvent.dataTransfer.effectAllowed = "copyMove";
                     }
 
                     function dragenter(e) {
