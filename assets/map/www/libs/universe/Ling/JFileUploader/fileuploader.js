@@ -281,6 +281,8 @@
             this.files = [];
             this.validator = new Validator();
             this.maxFile = 0;
+            this.nbQueueFiles = null; // internal
+            this.queueFileUrls = []; // internal
         };
         FileList.prototype = {
             addFile: function (oFile) {
@@ -320,6 +322,20 @@
                     this.addFile(file);
                 }
             },
+            /**
+             * This method should be only used at startup, when the files are loaded for the first time.
+             * But not when the user adds them.
+             * This method will ensure that the files are displayed in the order that they are defined (by the php script or the caller).
+             */
+            addFileUrlsByUrls: function (urls, options) {
+                this.nbQueueFiles = urls.length;
+                this.queueFileUrls = urls;
+
+                for (var i in urls) {
+                    var url = urls[i];
+                    this.addFileUrlByUrl(url, options);
+                }
+            },
             addFileUrlByUrl: function (url, options) {
                 var $this = this;
                 var _options = options;
@@ -350,13 +366,20 @@
                         }
                     }
 
-
                     $this.files.push(oFile);
-
-
                     $this.events.dispatch("onFileAdded", oFile, url, id);
 
                     $this._checkFileLimit();
+
+
+                    if (null !== $this.nbQueueFiles) {
+                        $this.nbQueueFiles--;
+                        if (0 === $this.nbQueueFiles) {
+                            $this.nbQueueFiles = null;
+                            $this.events.dispatch("onFileQueueUploaded", $this.queueFileUrls);
+                        }
+                    }
+
 
                 }, options);
             },
@@ -396,6 +419,34 @@
                 this.files.splice(oldIndex, 1);
                 this.files.splice(newIndex, 0, movedFile);
                 this.events.dispatch("onFilesReordered", this.files, oldIndex, newIndex);
+            },
+            resetByUrls: function (orderedUrls) {
+                var tmpFiles = [];
+
+                for (var i in orderedUrls) {
+                    var url = orderedUrls[i];
+                    for (var j in this.files) {
+                        var oFile = this.files[j];
+                        if (url === oFile.url) {
+                            tmpFiles.push(oFile);
+                        }
+                    }
+                }
+
+
+                /**
+                 * Note to myself: This is kind of a hack, so be aware that this is risky.
+                 */
+                var nbFiles = this.files.length;
+                for (var i = 0; i < nbFiles; i++) {
+                    this.removeFileByIndex(0);
+                }
+
+                for (var i in tmpFiles) {
+                    var oFile = tmpFiles[i];
+                    this.files.push(oFile);
+                    this.events.dispatch("onFileAdded", oFile, oFile.url, oFile.id);
+                }
             },
             //----------------------------------------
             //
@@ -1243,6 +1294,10 @@
                             $this.fileEditor.initialize(oFile, jDialog);
                         });
 
+                        this.events.on("onFileQueueUploaded", function (queueFileUrls) {
+                            $this.fileList.resetByUrls(queueFileUrls);
+                        });
+
 
                         //----------------------------------------
                         // BUILDING THE WIDGET
@@ -1414,10 +1469,11 @@
                         if (true === this.options.useFileEditor) {
                             ajaxOptions.useFileEditor = true;
                         }
-                        for (var i in urls) {
-                            var url = urls[i];
-                            this.fileList.addFileUrlByUrl(url, ajaxOptions);
-                        }
+                        this.fileList.addFileUrlsByUrls(urls, ajaxOptions);
+                        // for (var i in urls) {
+                        //     var url = urls[i];
+                        //     this.fileList.addFileUrlByUrl(url, ajaxOptions);
+                        // }
 
 
                         //----------------------------------------

@@ -553,6 +553,10 @@ History Log
 =============
 
 
+- 2.1.2 -- 2020-02-24
+
+    - fix unstable initial urls order 
+    
 - 2.1.1 -- 2020-02-24
 
     - fix jquery ui dialog not draggable
