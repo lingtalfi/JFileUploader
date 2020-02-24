@@ -43,6 +43,9 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
             'err.wrongMimeType': [
                 'Error with "{fileName}": Wrong mimetype: "{fileMimeType}" is not allowed. The allowed mime types are: {allowedMimeTypes}.',
             ],
+            'err.wrongFileExtension': [
+                'Error with "{fileName}": Wrong file extension: "{fileExtension}" is not allowed. The allowed file extensions are: {allowedFileExtensions}.',
+            ],
             'err.uploadError': [
                 'Error with "{fileName}": An error occurred during the upload for some reason.',
             ],

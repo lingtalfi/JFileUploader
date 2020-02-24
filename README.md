@@ -553,6 +553,11 @@ History Log
 =============
 
 
+- 2.2.0 -- 2020-02-24
+
+    - add bootstrap theme 
+    - add allowedFileExtension js validation option 
+
 - 2.1.2 -- 2020-02-24
 
     - fix unstable initial urls order 

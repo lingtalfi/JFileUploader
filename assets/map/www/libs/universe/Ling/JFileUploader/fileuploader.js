@@ -196,6 +196,10 @@
             return false;
         };
 
+        var getFileExtension = function (fileName) {
+            return fileName.split('.').pop();
+        };
+
         //----------------------------------------
         // THEME HOOKING
         //----------------------------------------
@@ -287,12 +291,13 @@
         FileList.prototype = {
             addFile: function (oFile) {
                 if (true === this.validator.test(oFile)) {
+                    console.log("pou");
                     oFile.itemId = this._getNewItemId();
                     this.files.push(oFile);
                     this.events.dispatch("onFileAdded", oFile);
                 }
 
-                this._checkFileLimit();
+                // this._checkFileLimit();
 
 
             },
@@ -1018,6 +1023,7 @@
          * - maxFileSize: optional, int = -1, the maximum number of bytes per file. Use -1 (negative one) to allow any size.
          * - maxFileNameLength: optional, int = 64, the maximum number of characters for the file name.
          * - mimeType: optional, array|string|null = null, the allowed mime type(s). By default, mimeType equals null, which means all mime types are allowed.
+         * - allowedFileExtension: optional, array|string|null = null, the allowed file extension(s). By default, allowedFileExtension equals null, which means all file extensions are allowed.
          * - uploadItemName: optional, string = item, the name of the uploaded file when sent to the server side script handling the upload.
          * - uploadItemExtraFields: optional, map = {}, an extra map of data to send to the server when uploading a file.
          * - serverUrl: optional, string = /upload.php, the url of the server script responsible for handling the uploading.
@@ -1076,6 +1082,7 @@
                 maxFileSize: -1,
                 maxFileNameLength: 64,
                 mimeType: null,
+                allowedFileExtension: null,
                 uploadItemName: "item",
                 uploadItemExtraFields: {},
                 serverUrl: "/upload.php",
@@ -1195,6 +1202,29 @@
                                         "allowedMimeTypes": allowedMimeTypes.join(', '),
                                     };
                                     return $this.getErrorByFormatString($this.lang.get("err.wrongMimeType"), tags);
+                                }
+                                return true;
+                            });
+                        }
+
+
+                        // adding file extension rule
+                        if (this.options.allowedFileExtension !== null) {
+                            var allowedFileExtensions = this.options.allowedFileExtension;
+                            if ('string' === typeof allowedFileExtensions) {
+                                allowedFileExtensions = [allowedFileExtensions];
+                            }
+
+                            this.validator.addRule(function (oFile) {
+                                var name = oFile.name;
+                                var extension = getFileExtension(oFile.name);
+                                if (-1 === allowedFileExtensions.indexOf(extension)) {
+                                    var tags = {
+                                        "fileName": '<strong>' + oFile.name + '</strong>',
+                                        "fileExtension": '<strong>' + extension + '</strong>',
+                                        "allowedFileExtensions": allowedFileExtensions.join(', '),
+                                    };
+                                    return $this.getErrorByFormatString($this.lang.get("err.wrongFileExtension"), tags);
                                 }
                                 return true;
                             });

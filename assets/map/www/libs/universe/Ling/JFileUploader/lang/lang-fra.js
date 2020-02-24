@@ -38,13 +38,16 @@ if ('undefined' === typeof window.FileUploaderLang_Eng) {
                 'Erreur avec "{fileName}": Le poids ne peut pas excéder {maxSize} (le fichier actuel pèse {fileSize}).',
             ],
             'err.maxFileNameLength': [
-                'Erreurr avec "{fileName}": Le nom du fichier ne doit pas contenir plus de {maxLength} caractères (le nom du fichier actuel comporte {length} caractères).',
+                'Erreur avec "{fileName}": Le nom du fichier ne doit pas contenir plus de {maxLength} caractères (le nom du fichier actuel comporte {length} caractères).',
             ],
             'err.wrongMimeType': [
-                'Erreurr avec "{fileName}": Mimetype incorrect: "{fileMimeType}" n\'est pas autorisé. Les mimeType autorisés sont: {allowedMimeTypes}.',
+                'Erreur avec "{fileName}": Mimetype incorrect: "{fileMimeType}" n\'est pas autorisé. Les mimeType autorisés sont: {allowedMimeTypes}.',
+            ],
+            'err.wrongFileExtension': [
+                'Erreur avec "{fileName}": Extension de fichier incorrecte: "{fileExtension}" n\'est pas autorisé. Les extensions de fichier autorisées sont: {allowedFileExtensions}.',
             ],
             'err.uploadError': [
-                'Erreurr avec "{fileName}": Une erreur est survenue pendant le téléchargement.',
+                'Erreur avec "{fileName}": Une erreur est survenue pendant le téléchargement.',
             ],
             'err.uploadAborted': [
                 'Erreur avec "{fileName}": Le téléchargement a été annulé.',
