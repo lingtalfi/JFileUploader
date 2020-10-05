@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25 -> 2020-06-04
+2019-11-25 -> 2020-10-05
 
 
 
@@ -345,9 +345,13 @@ let defaultOptions =
          */
         name: "the_file",
         /**
-         * int=-1.
-         * The maximum file size allowed for uploaded files.
-         * If -1, then any size is allowed.
+         * int=1.
+         * The maximum number of files that this widget will handle.
+         * If the value is -1, then it can handle any number of files.
+         *
+         * If the value is 1, the widget will create an input (html element) that results in a scalar when the form is posted.
+         * If the value is more than 1, the widget creates inputs of that results in an array when the form is posted.
+         *
          */
         maxFileSize: -1,
         /**
@@ -647,6 +651,10 @@ Note: in case you wonder, the admin theme used in the bootstrap examples is [zer
 History Log
 =============
 
+- 3.0.1 -- 2020-10-05
+
+    - update, maxFileSize now accepts human like values
+    
 - 3.0.0 -- 2020-06-04
 
     - new api 

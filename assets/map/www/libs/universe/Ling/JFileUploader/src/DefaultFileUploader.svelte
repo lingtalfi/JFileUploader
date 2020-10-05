@@ -76,6 +76,9 @@
         /**
          * int=-1.
          * The maximum file size allowed for uploaded files.
+         * You can specify human like values, such as 1.6k, 1.3M, etc...
+         * The [converthumansizetobytes function](https://github.com/lingtalfi/js-extension-ling#converthumansizetobytes) is used under the hood.
+         *
          * If -1, then any size is allowed.
          */
         maxFileSize: -1,
