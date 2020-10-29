@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25 -> 2020-10-05
+2019-11-25 -> 2020-10-29
 
 
 
@@ -651,6 +651,10 @@ Note: in case you wonder, the admin theme used in the bootstrap examples is [zer
 History Log
 =============
 
+- 3.0.2 -- 2020-10-29
+
+    - update api, fix "original image" not sent as a new file when original checkbox is ticked
+    
 - 3.0.1 -- 2020-10-05
 
     - update, maxFileSize now accepts human like values
