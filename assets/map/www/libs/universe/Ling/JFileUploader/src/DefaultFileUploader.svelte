@@ -748,7 +748,7 @@
                 });
 
             } else {
-                addServerError(`An error occurred with the request for url ${url}`);
+                addServerError(`An error occurred with the request for url ${url}. ` + response.status + ': ' + response.statusText);
             }
         });
 
