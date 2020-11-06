@@ -3,6 +3,13 @@
 
     import {onMount, setContext} from 'svelte';
     import jsx from 'js-extension-ling';
+    import { fade } from 'svelte/transition';
+    /**
+     * I don't know why the commented line below is removed when I compile,
+     * maybe it's rollup or a plugin that removes it?
+     * Anyway, make sure you have this line un-commented in order for this plugin to work.
+      */
+    // import { fade } from 'svelte/transition';
     import panda from "panda-headers";
     import Validator from "./modules/Validator";
     import GlobalProgressTracker from './modules/GlobalProgressTracker';
@@ -10,7 +17,6 @@
     import DropZoneHandler from "js-dropzone-handler";
     import ChunkUploader from "chunk-uploader";
     import dragula from "dragula";
-    import { fade } from 'svelte/transition';
     import FileEditor from "./components/DefaultFileEditor.svelte";
 
 
@@ -566,6 +572,7 @@
 
     function updateUFileBinaryData(uFile, oFile) {
 
+
         let res = validator.test(oFile);
         if (true === res) {
             uFile.file = oFile;
@@ -586,11 +593,27 @@
 
             if (true === options.immediateUpload) {
                 setTimeout(async function () {
-                    await uploadQueuedFiles({
-                        action: "update",
-                        url: uFile.url,
-                        original_url: uFile.original_url,
-                    });
+
+
+                    try {
+
+                        await uploadQueuedFiles({
+                            action: "update",
+                            url: uFile.url,
+                            original_url: uFile.original_url,
+                        });
+
+                    } catch (e) {
+                        /**
+                         * It was annoying me, while debugging, when there was an upload error to be stuck on the loading gif image (because
+                         * then the gui underneath disappear).
+                         * So setting is_loading to false makes the loading gif image disappear, and allows me to continue uploading files,
+                         * even if an error occurred.
+                         **/
+                        uFile.is_loading = false;
+                        updateUFile(uFile);
+                    }
+
 
                     let updatedEditedFile = _getUFileById(editedUFile.id);
                     editedUFile = updatedEditedFile;
@@ -616,8 +639,6 @@
         uFile.keep_original = jsx.toInt((true === dropped && false === original && false === cropped));
 
         let isExternalUrl = options.isExternalUrl(uFile.url);
-
-
 
 
         uFile = jsx.extend(uFile, postedData);

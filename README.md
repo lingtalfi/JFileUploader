@@ -1,6 +1,6 @@
 JFileUploader
 ===========
-2019-11-25 -> 2020-10-30
+2019-11-25 -> 2020-11-06
 
 
 
@@ -651,6 +651,10 @@ Note: in case you wonder, the admin theme used in the bootstrap examples is [zer
 History Log
 =============
 
+- 3.0.4 -- 2020-11-06
+
+    - update api, an upload error now doesn't freeze the gui on the loading gif   
+    
 - 3.0.3 -- 2020-10-30
 
     - update api, add http status code and text to server error messages   
